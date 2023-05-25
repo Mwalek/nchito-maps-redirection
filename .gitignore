@@ -1,0 +1,26 @@
+# ignore node dependency directories
+node_modules/
+
+# ignore composer dependency directories
+composer*
+vendor*
+.env
+
+# ignore log files and databases
+*.log
+*.sql
+*.sqlite
+
+# ignore debug.txt
+debug.txt
+
+# ignore dev tool configs
+.markdownlint.json
+settings.json
+
+# ignore irrelevant system files
+.DS_Store
+
+# ignore everything in /languages except .pot files
+languages/
+!languages/*.pot
