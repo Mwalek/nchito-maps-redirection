@@ -35,6 +35,7 @@ $dotenv->safeLoad();
 $config = array(
 	'username' => $_ENV['username'],
 	'password' => $_ENV['password'],
+	'url'      => $_ENV['url'],
 );
 
 /**
@@ -48,10 +49,11 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-nchito-maps-redirection.ph
  *
  * @param string $username The WordPress account's username.
  * @param string $password The App password used for authentication via non-interactive systems.
+ * @param string $url The url of the site running the Redirection plugin.
  * @return void
  */
-function run_nchito_maps_redirection( $username, $password ) {
-	$plugin = new Nchito_Maps_Redirection( $username, $password );
+function run_nchito_maps_redirection( $username, $password, $url ) {
+	$plugin = new Nchito_Maps_Redirection( $username, $password, $url );
 }
 
 run_nchito_maps_redirection( ...$config );
