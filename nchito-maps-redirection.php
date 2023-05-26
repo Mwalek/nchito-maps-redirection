@@ -29,7 +29,7 @@ namespace MwaleMe\Nchito_Maps_Redirection;
 
 require_once 'vendor/autoload.php';
 require_once 'includes/util/helpers.php';
-$dotenv = \Dotenv\Dotenv::createImmutable( __DIR__ );
+$dotenv = \Dotenv\Dotenv::createMutable( __DIR__ );
 $dotenv->safeLoad();
 
 $config = array(
@@ -37,6 +37,8 @@ $config = array(
 	'password' => $_ENV['password'],
 	'url'      => $_ENV['url'],
 );
+
+ray( $config )->red();
 
 /**
  * The core plugin class that is used to define internationalization,
