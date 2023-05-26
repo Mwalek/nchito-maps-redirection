@@ -72,7 +72,7 @@ class Nchito_Maps_Redirection {
 	 * @param array $data Options for the function.
 	 * @return array
 	 */
-	private function create_maps_redirect( $data ) {
+	public function create_maps_redirect( $data ) {
 
 		$target       = $data['target'];
 		$creds        = 'SECRET';
@@ -90,7 +90,7 @@ class Nchito_Maps_Redirection {
 		}
 
 		do {
-			$slug = generate_random_letters( 5 );
+			$slug = $this->generate_random_letters( 5 );
 			// A slug will be generated as long as the most recent value was not unique.
 		} while ( ! is_unique( $slug, $all_redirects ) );
 
@@ -130,6 +130,20 @@ class Nchito_Maps_Redirection {
 			$create_res['body'] = json_decode( $create_res['body'] );
 			return $create_res;
 
+	}
+
+	/**
+	 * Make a small function that returns random letters for a given length.
+	 *
+	 * @param int $length How many letters to return.
+	 * @return string
+	 */
+	public function generate_random_letters( $length ) {
+		$random = '';
+		for ( $i = 0; $i < $length; $i++ ) {
+			$random .= chr( wp_rand( ord( 'a' ), ord( 'z' ) ) );
+		}
+		return $random;
 	}
 
 }
