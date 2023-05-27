@@ -13,7 +13,7 @@ namespace MwaleMe\Nchito_Maps_Redirection;
 /**
  * The class responsible for running the integration
  */
-class Nchito_Maps_Redirection {
+final class Nchito_Maps_Redirection {
 	/**
 	 * The WP username
 	 *
