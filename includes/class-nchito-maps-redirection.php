@@ -138,7 +138,7 @@ class Nchito_Maps_Redirection {
 	 * @param int $length How many letters to return.
 	 * @return string
 	 */
-	public function generate_random_letters( $length ) {
+	private function generate_random_letters( $length ) {
 		$random = '';
 		for ( $i = 0; $i < $length; $i++ ) {
 			$random .= chr( wp_rand( ord( 'a' ), ord( 'z' ) ) );
