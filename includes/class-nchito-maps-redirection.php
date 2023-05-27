@@ -133,7 +133,7 @@ class Nchito_Maps_Redirection {
 	}
 
 	/**
-	 * Make a small function that returns random letters for a given length.
+	 * Returns random letters for a given length.
 	 *
 	 * @param int $length How many letters to return.
 	 * @return string
