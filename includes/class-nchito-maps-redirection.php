@@ -83,7 +83,19 @@ final class Nchito_Maps_Redirection {
 
 		$all_redirects = array();
 		$redirects_res = wp_remote_get( $this->url . '/wp-json/redirection/v1/redirect', array( 'headers' => $auth_headers ) );
-		if ( is_array( $redirects_res ) && ! is_wp_error( $redirects_res ) ) {
+		if ( is_wp_error( $redirects_res ) ) {
+			$fetch_redirects_error = new \WP_Error( 'redirects_not_fetched', $redirects_res->get_error_message(), array( 'status' => 500 ) );
+			return $fetch_redirects_error;
+		}
+		if ( is_array( $redirects_res ) ) {
+
+			if ( 200 !== $redirects_res['response']['code'] ) {
+				return new \WP_Error(
+					'redirects_not_fetched',
+					$redirects_res['response']['message'],
+					array( 'status' => $redirects_res['response']['code'] )
+				);
+			}
 
 			$redirects_body = json_decode( $redirects_res['body'], true );
 			$redirects      = $redirects_body['items'];
@@ -97,43 +109,51 @@ final class Nchito_Maps_Redirection {
 			// A slug will be generated as long as the most recent value was not unique.
 		} while ( ! is_unique( $slug, $all_redirects ) );
 
-			$body       = array(
-				'status'      => 'enabled',
-				'position'    => 0,
-				'match_data'  => array(
-					'source' => array(
-						'flag_regex'    => false,
-						'flag_query'    => 'ignore',
-						'flag_case'     => true,
-						'flag_trailing' => false,
-					),
+		$body       = array(
+			'status'      => 'enabled',
+			'position'    => 0,
+			'match_data'  => array(
+				'source' => array(
+					'flag_regex'    => false,
+					'flag_query'    => 'ignore',
+					'flag_case'     => true,
+					'flag_trailing' => false,
 				),
-				'options'     => array(
-					'log_exclude' => false,
-				),
-				'regex'       => false,
-				'url'         => '/' . $slug,
-				'match_type'  => 'url',
-				'title'       => 'Maps Redirect',
-				'group_id'    => 3,
-				'action_type' => 'url',
-				'action_code' => 301,
-				'action_data' => array(
-					'url' => $target,
-				),
-			);
-			$create_res = wp_remote_post(
-				$this->url . '/wp-json/redirection/v1/redirect',
-				array(
-					'method'  => 'POST',
-					'headers' => $auth_headers,
-					'body'    => wp_json_encode( $body ),
-				)
-			);
+			),
+			'options'     => array(
+				'log_exclude' => false,
+			),
+			'regex'       => false,
+			'url'         => '/' . $slug,
+			'match_type'  => 'url',
+			'title'       => 'Maps Redirect',
+			'group_id'    => 3,
+			'action_type' => 'url',
+			'action_code' => 301,
+			'action_data' => array(
+				'url' => $target,
+			),
+		);
+		$create_res = wp_remote_post(
+			$this->url . '/wp-json/redirection/v1/redirect',
+			array(
+				'method'  => 'POST',
+				'headers' => $auth_headers,
+				'body'    => wp_json_encode( $body ),
+			)
+		);
+
 		if ( is_array( $create_res ) && ! is_wp_error( $create_res ) ) {
+			if ( 200 !== $create_res['response']['code'] ) {
+				return new \WP_Error(
+					'redirect_not_added',
+					$create_res['response']['message'],
+					array( 'status' => $create_res['response']['code'] )
+				);
+			}
 			$create_res['body'] = json_decode( $create_res['body'] );
 		}
-			return $create_res;
+		return $create_res;
 
 	}
 
