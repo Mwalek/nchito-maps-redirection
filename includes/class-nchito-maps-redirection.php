@@ -81,12 +81,15 @@ final class Nchito_Maps_Redirection {
 			'Authorization' => 'Basic ' . base64_encode( $this->username . ':' . $this->password ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 		);
 
-		$all_redirects  = array();
-		$redirects_res  = wp_remote_get( $this->url . '/wp-json/redirection/v1/redirect', array( 'headers' => $auth_headers ) );
-		$redirects_body = json_decode( $redirects_res['body'], true );
-		$redirects      = $redirects_body['items'];
-		foreach ( $redirects as $redirect ) {
-			$all_redirects[] = $redirect['url'];
+		$all_redirects = array();
+		$redirects_res = wp_remote_get( $this->url . '/wp-json/redirection/v1/redirect', array( 'headers' => $auth_headers ) );
+		if ( is_array( $redirects_res ) && ! is_wp_error( $redirects_res ) ) {
+
+			$redirects_body = json_decode( $redirects_res['body'], true );
+			$redirects      = $redirects_body['items'];
+			foreach ( $redirects as $redirect ) {
+				$all_redirects[] = $redirect['url'];
+			}
 		}
 
 		do {
@@ -94,7 +97,7 @@ final class Nchito_Maps_Redirection {
 			// A slug will be generated as long as the most recent value was not unique.
 		} while ( ! is_unique( $slug, $all_redirects ) );
 
-			$body               = array(
+			$body       = array(
 				'status'      => 'enabled',
 				'position'    => 0,
 				'match_data'  => array(
@@ -119,7 +122,7 @@ final class Nchito_Maps_Redirection {
 					'url' => $target,
 				),
 			);
-			$create_res         = wp_remote_post(
+			$create_res = wp_remote_post(
 				$this->url . '/wp-json/redirection/v1/redirect',
 				array(
 					'method'  => 'POST',
@@ -127,7 +130,9 @@ final class Nchito_Maps_Redirection {
 					'body'    => wp_json_encode( $body ),
 				)
 			);
+		if ( is_array( $create_res ) && ! is_wp_error( $create_res ) ) {
 			$create_res['body'] = json_decode( $create_res['body'] );
+		}
 			return $create_res;
 
 	}

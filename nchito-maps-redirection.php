@@ -38,8 +38,6 @@ $config = array(
 	'url'      => $_ENV['url'],
 );
 
-ray( $config )->red();
-
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
